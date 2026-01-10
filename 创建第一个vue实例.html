@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>创建第一个Vue实例</title>
+    <style>
+        .a{
+            border: 1px solid #000;
+        }
+        .b{
+            border: 10px solid #000;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <h1>{{ message }}</h1>
+    <p>{{ msg.data }}</p>
+    <div v-html="html"></div>
+    <div v-show="showif">v-show为display显隐</div>
+    <div v-if="showif">v-if为条件渲染</div>
+    <div v-else>v-else为条件渲染</div>
+    <div v-on:click="showif = !showif">v-on注册事件</div>
+    <div @click="methodsfunction">@注册事件</div>
+    <div v-bind:style="bind">v-bind为动态标签属性</div>
+    <div :style="bind">v-bind可省略为：</div>
+    <div v-for="i in 3">v-for基于数据渲染元素,key为唯一标识</div>
+    <input v-model="message">v-model为表单数据双绑定</input>
+    <div><a @click.prevent="alert('如@keyup.enter按下回车事件，v-model.trim去空格，.number转数字，@事件.stop阻止冒泡，.prevent阻止默认行为。')">
+        指令修饰符，为某些关键字添加.*，实现不同的操作
+    </a></div>
+    <div :class="{'a': showif, 'b': !showif}" :style="{'color': showif ? 'red' : 'blue'}">
+        :class属性可以为对象数组，对象键为类名，值为布尔，:style属性可以为对象。
+    </div>
+    <div>计算属性是基于已有属性求得的新属性，在computed中声明，*(){return}，使用同响应式属性一致。{{comnum}}</div>
+    <div @click="comset=!comset">简写只能读取，*:{get(){},set(*){}}可以修改。{{comset}}</div>
+    <div>watch:{*(n,o){}}监听器，在数据变换后执行函数。{{n}}|{{o}}</div>
+    <div>*:{*:*,handler(n,o){}}可以额外配置deep和immediate。{{nn}}|{{oo}}</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            message: '创建第一个Vue实例',
+            msg: {
+                data: '{{*}}为插值表达式，需要有数据，包含表达式而不是语句，不能在标签里使用。'
+            },
+            html: `<p>v-html为innerHTML</p>`,
+            showif: true,
+            bind: 'color: red;',
+            n: '',
+            o: '',
+            nn: '',
+            oo: '',
+        },
+        computed: {
+            comnum() {
+                return 100
+            },
+            comset:{
+                get(){
+                    return this.showif
+                },
+                set(value){
+                    this.showif = value
+                }
+            }
+        },
+        watch: {
+            showif(n,o){
+                this.n = n
+                this.o = o
+            },
+            showif:{
+                handler(n,o){
+                    this.nn = n
+                    this.oo = o
+                },
+                immediate:true,
+                deep:true
+            }
+        },
+        methods: {
+            methodsfunction() {
+                console.log('函数放在methods里，访问data的变量要用this.');
+                this.showif = !this.showif;
+            }
+        },
+        beforecreate() { console.log('beforecreate:实例初始化之后，数据观测和事件配置之前调用'); },
+        created() { console.log('created:实例创建完成，数据观测和事件配置之后调用'); },
+        beforemount() { console.log('beforemount:模板编译/挂载开始之前调用'); },
+        mounted() { console.log('mounted:实例挂载完成后调用'); }, 
+        beforeupdate() { console.log('beforeupdate:数据更新时调用，发生在虚拟DOM重新渲染和打补丁之前'); },
+        updated() { console.log('updated:由于数据更改，虚拟DOM重新渲染和打补丁之后调用'); },
+        beforedestroy() { console.log('beforedestroy:实例销毁之前调用'); }, 
+        destroyed() { console.log('destroyed:实例销毁之后调用'); } 
+    });
+</script>
+</body>
+</html>

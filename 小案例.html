@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vue小案例</title>
+    <style>
+        .a {
+            width: 390px;margin: 39px auto;padding: 39px;border: 1px solid #000;border-radius: 39px;text-align: center;
+        }
+        .b{
+            border: 1px solid #000;
+            margin: 10px auto;
+            width: 390px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div class="b">vue指令小案例</div>
+    <div class="a">
+        <button @click="numupdata(0)" v-show="up">上</button>
+        <span :style="classa">{{ num }}px</span>
+        <button @click="numupdata(1)" v-show="down">下</button>
+    </div>
+    <div class="b">v-for小案例</div>
+    <div class="a">
+        <div v-for="i in array" :key="i">{{ i }}<button @click="removeItem(i)">删除</button></div>
+    </div>
+    <div class="b">vue记事本小案例</div>
+    <div class="a">
+        <div>
+            <input v-model="Notepad" @keyup.enter="addNotepad"></input>
+            <button @click="addNotepad">添加</button>
+        </div>      
+        <div v-for="i in Notepadarr" :key="i.id">
+            {{ i.data }}
+            <button @click="removeItem(i.id)">删除</button>
+        </div>
+        <hr>
+        <div>
+            <button @click="clearNotepad">清空</button>
+            合计：{{ Notepadarr.length }}条
+        </div>
+    </div>
+    <div class="b">vue导航小案例</div>
+    <div class="a">
+        <div v-for="item in tabarr" :key="item.id">
+            <div :class="{'b': item.id === tabid}" @click="tabid = item.id">{{ item.data }}</div>
+        </div>
+    </div>
+    <div class="b">vue自制进度条小案例</div>
+    <div class="a">
+        <div class="b" style="height: 39px;padding: 2px;background: #aaa;">
+            <div style="height: 100%;background: #fff;" :style="{width: `${percent>100?100:percent}%`}"></div>
+        </div>
+        <button @click="percent += 10">增加进度</button>
+    </div>
+    <div class="b">v-model表单小案例</div>
+    <div class="a">
+        <div>
+            姓名：<input v-model="vmform.name" placeholder="请输入姓名">
+        </div>
+        <div>
+            喜欢dianclar的小破站：<input v-model="vmform.like" type="checkbox">
+        </div>
+        <div>
+            性别：
+            <input v-model="vmform.sex" type="radio" value="男">男
+            <input v-model="vmform.sex" type="radio" value="女">女
+        </div>
+        <div>
+            来自：
+            <select v-model="vmform.from">
+                <option value="中国">中国</option>
+                <option value="外国">外国</option>
+            </select>
+        </div>
+        <button @click="alert(`${vmform.name},${vmform.like},${vmform.sex},${vmform.from}`)">提交</button>
+    </div>
+    <div class="b">computed求平均分小案例</div>
+    <div class="a">
+        <div>分数：<span v-for="(item, index) in comarr" :key="index">{{ item }}|</span></div>
+        <div>总分：{{comnum}}|平均分：{{ comarr.length?(comnum / comarr.length).toFixed(2):0 }}</div>
+        <div>
+            添加分数：<input v-model.number="comarradd" @keyup.enter="comarr.push(comarradd), comarradd = ''"></input>
+            <button @click="comarr.push(comarradd), comarradd = ''">添加</button>
+            <button @click="comarr = []">清空</button>
+        </div>
+    </div>
+    <div class="b">watch二进制翻译小案例</div>
+    <div class="a">
+        <div style="display: flex;">
+            <textarea v-model="binaryInput" placeholder="请输入文本翻译成二进制" style="width: 50%;height: 200px;"></textarea>
+            <div style="width: 50%;height: 200px;border: 1px solid #000;">
+                翻译结果：
+                <div>{{ binaryOutput }}</div>
+            </div>
+        </div>
+    </div>
+     <div class="b">vue购物车小案例</div>
+    <div class="a">
+        <div v-for="item in shoppingarr" :key="item.id">
+            <input type="checkbox" v-model="item.action">
+            {{ item.name }} | 价格：{{ item.price }} | 数量：
+            <button @click="item.num > 1 ? item.num-- : item.num = 1">-</button>
+            {{ item.num }}
+            <button @click="item.num++">+</button>
+            | 小计：￥{{ item.price * item.num }}
+            <button @click="shoppingarr = shoppingarr.filter(i => i.id !== item.id)">删除</button>
+        </div>
+        <hr>
+        <div>
+            <input type="checkbox" v-model="shoppingall">全选 | 
+            合计：￥{{ shoppingarr.filter(i => i.action).reduce((a, b) => a + b.price * b.num, 0) }}
+            <button @click="shoppingarr = shoppingarr.filter(i => !i.action)">删除选中商品</button>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            num: 1,
+            classa: `font-size: 10px;`,
+            up: false,
+            down: true,
+            array:[1,2,3],
+            Notepad: '',
+            Notepadarr: [{
+                id: 1,
+                data: '吃饭'
+            }, {
+                id: 2,
+                data: '睡觉'
+            }, {
+                id: 3,
+                data: '打豆豆'
+            }],
+            tabarr:[{
+                id:1,
+                data:'首页'
+            },{
+                id:2,
+                data:'关于'
+            },{
+                id:3,
+                data:'联系'
+            }],
+            tabid:1,
+            percent: 0,
+            vmform: {
+                name: 'dianclar',
+                like: true,
+                sex: '男',
+                from: '中国'
+            },
+            comarr:[],
+            comarradd:'',
+            binaryInput: '',
+            binaryOutput: '',
+            binarytime: null,
+            shoppingarr: [{
+                id: 1,
+                name: '苹果',
+                price: 3,
+                num: 1,
+                action: false
+            }, {
+                id: 2,
+                name: '香蕉',
+                price: 2,
+                num: 1,
+                action: false
+            }, {
+                id: 3,
+                name: '橘子',
+                price: 4,
+                num: 1,
+                action: false
+            }],
+        },  
+        computed: {
+            comnum() {
+                return this.comarr.reduce((a, b) => a + b, 0);
+            },
+            shoppingall: {
+                get() {
+                    return this.shoppingarr.every(i => i.action);
+                },
+                set(value) {
+                    this.shoppingarr.forEach(i => i.action = value);
+                }
+            }
+        },
+        watch: {
+            binaryInput(newVal) {
+                clearTimeout(this.binarytime);
+                this.binarytime = setTimeout(() => {
+                    this.binaryOutput = Array.from(new TextEncoder().encode(newVal))
+                        .map(byte => byte.toString(2).padStart(8, '0'))
+                        .join(' ');
+                }, 1000);
+            }
+        },
+        methods: {
+            numupdata(type) {
+                if (type === 0) {
+                    this.num--;
+                } else {
+                    this.num++;
+                }
+                if (this.num <= 1) {
+                    this.up = false;
+                } else if (this.num >= 10) {
+                    this.down = false;
+                } else {
+                    this.up = true;
+                    this.down = true;
+                }
+                this.classa = `font-size: ${this.num}0px;`;
+            },
+            removeItem(i) {
+                this.array.splice(this.array.indexOf(i), 1);
+            },
+            addNotepad() {
+                if (this.Notepad.trim() !== '') {
+                    this.Notepadarr.push({
+                        id: this.Notepadarr.length ? this.Notepadarr[this.Notepadarr.length - 1].id + 1 : 1,
+                        data: this.Notepad
+                    });
+                    this.Notepad = '';
+                }
+            },
+            removeItem(id) {
+                this.Notepadarr = this.Notepadarr.filter(item => item.id !== id);
+            },
+            clearNotepad() {
+                this.Notepadarr = [];
+            }
+        }
+    });
+</script>
+</body>
+</html>
