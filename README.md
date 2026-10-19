@@ -881,6 +881,13 @@ module.exports = {
     'no-unused-vars': 'warn', // 未使用变量仅警告
     'no-empty': 'warn', // 空代码块仅警告
   },
+  globals: { // 可直接使用的全局变量
+  },
+  overrides: [
+    {
+      files: ['*.vue'], // 校验 vue 文件
+    },
+  ],
 }
 
 ```
