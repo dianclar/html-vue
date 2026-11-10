@@ -228,6 +228,7 @@ webpack.config.js文件mode键配置打包模式，resolve键alias键可以配�
 ```
 数据库是存储管理数据的仓库，MySQL是一个开源免费流行的数据库，一般每个项目对应独立数据库，不同数据存于不同表。
 开发一般安装server和workbench，server存储管理数据，workbench可视化管理。
+
 mysql -u * -p连接MySQL 3306端口。
 SHOW DATABASES;显示所有数据库。
 CREATE DATABASE *创建数据库。
@@ -243,13 +244,25 @@ ALTER TABLE * ADD * *添加列。
 ALTER TABLE * DROP COLUMN *删除列。
 INSERT INTO 表名 (列1, 列2) VALUES (值1, 值2);插入数据。
 SELECT * FROM 表名; -- 查询所有列。
-SELECT 列1, 列2 FROM 表名 WHERE 条件;查询数据。
 UPDATE 表名 SET 列名=新值 WHERE 条件;更新数据。
 DELETE FROM 表名 WHERE 条件;删除数据。
 TRUNCATE TABLE 表名;清空表数据。
+
 sql是结构化查询语言，是访问和处理数据库的编程语言，用sql编写的代码称为sql语句，在关系型数据库sql中使用。
 -- 为注释，关键字对大小写不敏感。
-order by *可以升序，desc降序，count(*)给出数量。
+
+真实查询业务数据:
+
+select a.id as user_id, --查询 a 的 id 并重命名为 user_id
+  b.name, -- 展示 name 值为 b 的 name
+  concat(a.name,' ',b.id) as name_id, -- 将 a 的 name 和 b 的 id 拼接
+  (select count(*) from datac c -- count(*) 为统计数量
+    where c.id = b.cid) as cleng -- 子查询，必须只有一个值，最好有别名
+from dataa a -- 主查询表，别名 a
+left join datab b on a.bid = b.id -- 多表查询, 关联条件
+where a.email = 'c@c.cc' and a.delf = 0 -- 条件
+order by a.id desc -- 排序
+limit 20; -- 查询数量
 ```
 
 # 八、终端命令
